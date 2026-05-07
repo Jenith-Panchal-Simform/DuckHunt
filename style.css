@@ -4,7 +4,7 @@ body{
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
-    cursor:url('assets/target.png')
+    cursor: url('assets/target.png'), auto
 }
 @font-face {
     font-family: game-font;
