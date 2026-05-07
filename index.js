@@ -24,11 +24,11 @@ window.onload = function () {
 };
 function addDuck() {
     ducks = [];
-    duckCount = Math.floor(Math.random() * 2) + 1;
+    duckCount = Math.floor(Math.random() * 15) + 1;
     for (let i = 0; i < duckCount; i++) {
-        let imageName = duckImageNames[Math.floor(Math.random() * 2)];
         let duckImage = document.createElement("img");
-        duckImage.src = "assets/" + imageName;
+        duckImage.classList.add("duck");
+        duckImage.src = "assets/duck-left.gif";
         duckImage.height = duckHeight;
         duckImage.width = duckWidth;
         //add event Listener for shoot and score
@@ -41,17 +41,19 @@ function addDuck() {
             //remove the shot duck
             document.body.removeChild(this);
             let remainingDucks = [];
+            let lastDuck;
             for (let i = 0; i < ducks.length; i++) {
+                lastDuck = ducks[ducks.length - 1];
                 if (ducks[i].image != this) {
                     remainingDucks.push(ducks[i]);
                 }
             }
             ducks = remainingDucks;
+            console.log("ducks", lastDuck);
             if (ducks.length == 0) {
-                addDog();
+                addDog(lastDuck.x);
             }
         });
-        duckImage.style.position = "absolute";
         document.body.appendChild(duckImage);
         let duck = {
             image: duckImage,
@@ -60,10 +62,6 @@ function addDuck() {
             velocityX: duckVelocityX,
             velocityY: duckVelocityY,
         };
-
-        duck.image.style.left = String(duck.x) + "px";
-        duck.image.style.top = String(duck.y) + "px";
-
         //if duck is Left then inverset he velocity of duck in x position as it moves left
         if (duck.image.src.includes(duckImageNames[0])) {
             duck.velocityX = -duckVelocityX;
@@ -81,26 +79,38 @@ function moveDuck() {
         duck.x += duck.velocityX;
         duck.y += duck.velocityY;
 
-        //if(duck moves out of screen)
-        if (duck.x < 0 || duck.x + duckWidth > gameWidth) {
-            duck.x -= duck.velocityX;
-            duck.velocityX = -1 * duck.velocityX;
-            //if velocity <0 then change duck image
-            if (duck.velocityX < 0) {
-                duck.image.src = "assets/" + duckImageNames[0]; //left
-            } else {
-                duck.image.src = "assets/" + duckImageNames[1]; //right
-            }
+        // Horizontal collision
+        if (duck.x < 0) {
+            duck.x = 0;
+            duck.velocityX *= -1;
         }
-        if (duck.y < 0 || duck.y + duckHeight > gameHeight) {
-            duck.y -= duck.velocityY;
-            duck.velocityY = -1 * duck.velocityY;
+
+        if (duck.x + duckWidth > gameWidth) {
+            duck.x = gameWidth - duckWidth;
+            duck.velocityX *= -1;
         }
-        duck.image.style.left = String(duck.x) + "px";
-        duck.image.style.top = String(duck.y) + "px";
+
+        // Change image direction
+        if (duck.velocityX < 0) {
+            duck.image.style.transform = `translate3d(${duck.x}px, ${duck.y}px, 0) scaleX(1)`;
+        } else {
+            duck.image.style.transform = `translate3d(${duck.x}px, ${duck.y}px, 0) scaleX(-1)`;
+        }
+
+        // Vertical collision
+        if (duck.y < 0) {
+            duck.y = 0;
+            duck.velocityY *= -1;
+        }
+
+        if (duck.y + duckHeight > gameHeight) {
+            duck.y = gameHeight - duckHeight;
+            duck.velocityY *= -1;
+        }
     }
 }
-function addDog() {
+function addDog(position) {
+    console.log(position);
     let dogImage = document.createElement("img");
     if (duckCount == 1) {
         dogImage.src = "assets/dog-duck1.png";
@@ -114,7 +124,11 @@ function addDog() {
 
     dogImage.style.position = "fixed";
     dogImage.style.bottom = "0";
-    dogImage.style.left = "50%";
+    let dogX = Math.max(0, Math.min(position, gameWidth - dogImage.width));
+
+    dogImage.style.left = `${dogX}px`;
+    // dogImage.style.left = String(val) + "px";
+
     //play audio when dog seen
     let dogScore = new Audio("assets/dog-score.mp3");
     dogScore.play();
