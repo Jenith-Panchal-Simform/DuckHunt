@@ -1,17 +1,27 @@
-body{
-    background: url('assets/duckhunt-bg-4k.png');
+body {
+    background: url("assets/duckhunt-bg-4k.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
-    cursor: url('assets/target.png'), auto
+    cursor: url("assets/target.png"), auto;
+    overflow: hidden;
 }
 @font-face {
     font-family: game-font;
-    src: url('assets/game-font.otf');
+    src: url("assets/game-font.otf");
 }
-#score{
+#score {
     font-family: game-font;
     font-size: 30px;
     color: white;
+}
+#reset {
+    border: none;
+    outline: none;
+    background: red;
+    color: white;
+    height: 25px;
+    font-weight: bold;
+    cursor: pointer;
 }
