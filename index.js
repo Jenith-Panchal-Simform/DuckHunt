@@ -1,5 +1,5 @@
 let duckImageNames = ["duck-left.gif", "duck-right.gif"];
-let duckCount = 1;
+let duckCount ;
 let duckWidth = 96;
 let duckHeight = 93;
 let gameHeight = window.screen.height * (3 / 4);
@@ -7,7 +7,7 @@ let gameWidth = window.screen.width;
 let duckVelocityX = 5;
 let duckVelocityY = 5;
 let ducks;
-
+let score =0 
 window.onload = function () {
     addDuck();
     //60frames per sec
@@ -17,12 +17,29 @@ window.onload = function () {
 };
 function addDuck() {
     ducks = [];
+    duckCount=Math.floor(Math.random()*2)+1
     for (let i = 0; i < duckCount; i++) {
         let imageName = duckImageNames[Math.floor(Math.random() * 2)];
         let duckImage = document.createElement("img");
         duckImage.src = "assets/" + imageName;
         duckImage.height = duckHeight;
         duckImage.width = duckWidth;
+        //add event Listener for shoot and score
+        duckImage.addEventListener("click",function(){
+             score++;
+            document.getElementById("score").innerHTML=score
+            //remove the shot duck
+            document.body.removeChild(this)
+            let remainingDucks=[]
+            for(let i=0;i<ducks.length;i++)
+            {
+                if(ducks[i].image != this)
+                {
+                    remainingDucks.push(ducks[i])
+                }
+            }
+            ducks=remainingDucks
+        })
         duckImage.style.position = "absolute";
         document.querySelector("body").appendChild(duckImage);
         let duck = {
@@ -47,10 +64,8 @@ function randomPosition(limit) {
     return Math.floor(Math.random() * limit);
 }
 function moveDuck() {
-    console.log("hello");
     for (let i = 0; i < ducks.length; i++) {
         let duck = ducks[i];
-        console.log(duck.x);
         //move Duck position
         duck.x += duck.velocityX;
         duck.y += duck.velocityY;
@@ -75,4 +90,8 @@ function moveDuck() {
         duck.image.style.left = String(duck.x) + "px";
         duck.image.style.top = String(duck.y) + "px";
     }
+}
+function handleShoot()
+{
+
 }
