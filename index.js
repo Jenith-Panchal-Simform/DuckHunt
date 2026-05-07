@@ -4,10 +4,14 @@ let duckWidth=96
 let duckHeight=93
 let gameHeight=window.screen.height*(3/4)
 let gameWidth=window.screen.width
-
+let duckVelocityX=5
+let duckVelocityY=5
+let ducks;
 window.onload=function()
 {
     addDuck()
+    //60frames per sec  
+    setInterval(()=>{moveDuck()},1000/60)
 }
 function addDuck()
 {
@@ -25,14 +29,36 @@ function addDuck()
             image:duckImage,
             x:randomPosition(gameWidth-duckWidth),
             y:randomPosition(gameHeight-duckHeight),
+            velocityX:duckVelocityX,
+            velocityY:duckVelocityY
         }
 
-        duckImage.style.left=String(duck.x)+"px"
-        duckImage.style.top=String(duck.y)+"px"
+        duck.image.style.left=String(duck.x)+"px"
+        duck.image.style.top=String(duck.y)+"px"
 
+        //if duck is Left then inverset he velocity of duck in x position as it moves left
+        if(duck.image.src.includes(duckImageNames[0]))
+        {
+            duck.velocityX = -duckVelocityX;
+        }
+        ducks.push(duck)
     }
 }
 function randomPosition(limit)
 {
     return Math.floor(Math.random()*limit)
+}
+function moveDuck()
+{
+    console.log("hello")
+    for(let i=0;i<ducks.length;i++)
+    {
+        let duck=ducks[i]
+        console.log(duck.x)
+        //move Duck position
+        duck.x +=duck.velocityX
+        duck.y +=duck.velocityY
+        duck.image.style.left=String(duck.x)+"px"
+        duck.image.style.top=String(duck.y)+"px"
+    }
 }
